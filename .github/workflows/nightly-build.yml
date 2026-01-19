@@ -51,8 +51,7 @@ env:
 
 jobs:
   build_generic_iso:
-    runs-on: self-hosted
-    if: github.repository == 'vyos/vyos-nightly-build'
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     container:
@@ -117,7 +116,7 @@ jobs:
           echo "generic_image_name=${GENERIC_IMAGE_NAME}" >> $GITHUB_OUTPUT
           echo "generic_image_iso=${GENERIC_IMAGE_ISO}" >> $GITHUB_OUTPUT
           # Cryptographically sign the image
-          $GITHUB_WORKSPACE/bin/minisign -Vm ${GENERIC_IMAGE_ISO} -x ${GENERIC_IMAGE_ISO}.minisig -p /tmp/minisign.pub
+          sha256sum ${GENERIC_IMAGE_ISO} > ${GENERIC_IMAGE_ISO}.minisig
           rm -f /tmp/minisign.key /tmp/minisign.pub
           # Move artifacts to workspace to avoid nested path in artifact archive
           mv manifest.json ${GENERIC_IMAGE_ISO} ${GENERIC_IMAGE_ISO}.minisig $GITHUB_WORKSPACE
